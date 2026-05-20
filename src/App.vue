@@ -34,15 +34,14 @@ import GameWord from '@/components/GameWord.vue'
 import GamePopup from '@/components/GamePopup.vue'
 import GameNotification from '@/components/GameNotification.vue'
 import { useRandomWord } from '@/composables/useRandomWord.ts'
+import {useLetters} from '@/composables/useLetters.ts'
 
-const {word, getRandomWord} = useRandomWord()
-const letters = ref<string[]>([]);
+const {word, getRandomWord} = useRandomWord();
+const {letters, correctLetters, wrongLetters, addLetter, resetLetters} = useLetters(word);
+
 const notification = ref<InstanceType<typeof GameNotification> | null>(null)
 const popup = ref<InstanceType<typeof GamePopup> | null>(null)
 const isGameOver = ref(false)
-
-const correctLetters = computed((): string[] => letters.value.filter(l => word.value.includes(l)))
-const wrongLetters = computed((): string[] => letters.value.filter(l => !word.value.includes(l)))
 
 
 watch(wrongLetters, () => {
@@ -68,14 +67,12 @@ const handleKeydown = (event: KeyboardEvent) => {
     return;
   }
 
-  if (/[а-яА-ЯёЁ]/.test(key)) {
-    letters.value.push(key);
-  }
+  addLetter(key);
 }
 
 const restart = async () => {
   await getRandomWord();
-  letters.value = [];
+  resetLetters();
   popup.value?.close();
   isGameOver.value = false;
 }
