@@ -1,19 +1,20 @@
 <template>
   <div class="notification-container" :class="{show: isVisible}">
-    <p>Вы уже вводили этот символ</p>
+    <p>{{ message }}</p>
   </div>
 </template>
 <script setup lang="ts">
 import {ref, onUnmounted} from 'vue';
 
+const message = ref<string>('');
 const isVisible = ref<boolean>(false);
 
 
 let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-const open = () => {
+const open = (msg: string): void => {
   isVisible.value = true;
-
+  message.value = msg;
   if (timeoutId) {
     clearTimeout(timeoutId)
   }

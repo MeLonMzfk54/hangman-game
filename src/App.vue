@@ -37,11 +37,12 @@ import { useRandomWord } from '@/composables/useRandomWord.ts'
 import {useLetters} from '@/composables/useLetters.ts'
 
 const {word, getRandomWord} = useRandomWord();
-const {letters, correctLetters, wrongLetters, addLetter, resetLetters} = useLetters(word);
 
-const notification = ref<InstanceType<typeof GameNotification> | null>(null)
+const notification = ref<InstanceType<typeof GameNotification> | null>(null);
 const popup = ref<InstanceType<typeof GamePopup> | null>(null)
 const isGameOver = ref(false)
+
+const {letters, correctLetters, wrongLetters, addLetter, resetLetters} = useLetters(word, notification);
 
 
 watch(wrongLetters, () => {
@@ -63,7 +64,7 @@ const handleKeydown = (event: KeyboardEvent) => {
   const key = event.key.toLowerCase()
 
   if (letters.value.includes(key)) {
-    notification.value?.open()
+    notification.value?.open('Вы уже вводили этот символ')
     return;
   }
 
