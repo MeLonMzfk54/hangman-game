@@ -2,7 +2,10 @@
   <GameHeader />
   <div class="game-container">
     <GameFigure />
-    <GameWrongLetters />
+    <GameWrongLetters
+      v-if="wrongLetters.length"
+      :wrongLetters="wrongLetters"
+    />
     <GameWord
       :word="word"
       :correctLetters="correctLetters"
@@ -27,6 +30,7 @@ const word = ref<string>('василий');
 const letters = ref<string[]>([]);
 
 const correctLetters = computed((): string[] => letters.value.filter(l => word.value.includes(l)))
+const wrongLetters = computed((): string[] => letters.value.filter(l => !word.value.includes(l)))
 
 const handleKeydown = (event: KeyboardEvent) => {
   const { key } = event;
