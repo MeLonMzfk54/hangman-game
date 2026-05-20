@@ -1,7 +1,9 @@
 <template>
   <GameHeader />
   <div class="game-container">
-    <GameFigure />
+    <GameFigure
+      :wrong-letters-count="wrongLetters.length"
+    />
     <GameWrongLetters
       v-if="wrongLetters.length"
       :wrongLetters="wrongLetters"
