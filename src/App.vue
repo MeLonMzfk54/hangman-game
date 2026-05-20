@@ -38,24 +38,28 @@ const word = ref<string>('василий');
 const letters = ref<string[]>([]);
 const notification = ref<InstanceType<typeof GameNotification> | null>(null)
 const popup = ref<InstanceType<typeof GamePopup> | null>(null)
+const isGameOver = ref(false)
 
 const correctLetters = computed((): string[] => letters.value.filter(l => word.value.includes(l)))
 const wrongLetters = computed((): string[] => letters.value.filter(l => !word.value.includes(l)))
 
 watch(wrongLetters, () => {
   if (wrongLetters.value.length >= 6) {
+    isGameOver.value = true;
     popup.value?.open('lose');
   }
 })
 
 watch(correctLetters, () => {
   if ([...word.value].every((w: string) => correctLetters.value.includes(w))) {
+    isGameOver.value = true;
     popup.value?.open('win');
   }
 })
 
 const handleKeydown = (event: KeyboardEvent) => {
-  const { key } = event;
+  if (isGameOver.value) return;
+  const key = event.key.toLowerCase()
 
   if (letters.value.includes(key)) {
     notification.value?.open()
@@ -63,13 +67,14 @@ const handleKeydown = (event: KeyboardEvent) => {
   }
 
   if (/[а-яА-ЯёЁ]/.test(key)) {
-    letters.value.push(key.toLowerCase());
+    letters.value.push(key);
   }
 }
 
 const restart = () => {
   letters.value = [];
   popup.value?.close();
+  isGameOver.value = false;
 }
 
 onMounted(() => {
